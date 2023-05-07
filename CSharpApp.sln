@@ -16,6 +16,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpApp", "application\CSharpApp\CSharpApp.csproj", "{BD2D268C-327B-4017-916F-EEBEED1FF082}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBaseSQLServer", "DataBaseSQLServer", "{86EC57C1-7E2C-42F4-BF4B-1F9A9B4F1AF7}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\OneDrive\Рабочий стол\Новая папка (2)\foreign_names.sql = ..\..\..\OneDrive\Рабочий стол\Новая папка (2)\foreign_names.sql
+		..\..\..\OneDrive\Рабочий стол\Новая папка (2)\mssql_create_tables.sql = ..\..\..\OneDrive\Рабочий стол\Новая папка (2)\mssql_create_tables.sql
+		..\..\..\OneDrive\Рабочий стол\Новая папка (2)\russian_names.sql = ..\..\..\OneDrive\Рабочий стол\Новая папка (2)\russian_names.sql
+		..\..\..\OneDrive\Рабочий стол\Новая папка (2)\russian_surnames.sql = ..\..\..\OneDrive\Рабочий стол\Новая папка (2)\russian_surnames.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
