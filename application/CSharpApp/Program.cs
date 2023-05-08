@@ -28,12 +28,15 @@ Console.WriteLine("Добро пожаловать, Вы  запустили к�
 while (true)
 {
     Console.WriteLine("Введите комманду запуска приложенния");
+    Console.WriteLine("Команда выгледит так \"csharp myapp.cs #\" за место решётки цифра от 1-6");
     Console.Write(", ");
 
     var command = Console.ReadLine();
 
     if (command.ToLower().Equals("exit"))
         break;
+
+    var commandSplit = command.Trim().Split(' ');
 
     switch (command.ToLower())
     {
@@ -42,9 +45,10 @@ while (true)
             myApp1.Run();
             break;
 
-        //case "CSharp myApp.cs 2":
-        //    myApp2.Run();
-        //    break;
+        case "csharp myapp.cs 2":
+            var myApp2 = new Starter2(sqlConnection);
+            myApp2.Run();
+            break;
 
         //case "CSharp myApp.cs 3":
         //    myApp3.Run();
