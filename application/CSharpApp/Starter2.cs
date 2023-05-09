@@ -1,13 +1,24 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using CSharpApp;
+using Microsoft.Data.SqlClient;
 
-internal class Starter2
+internal class Starter2 : StqrterAbstract
 {
-    SqlConnection sqlConnection;
-    public Starter2(SqlConnection sqlConnection)
+    public Starter2(SqlConnection sqlConnection) : base(sqlConnection)
     {
-        this.sqlConnection = sqlConnection;
     }
-    public void Run()
+
+    public override void Introduction()
+    {
+        Console.WriteLine("Это программа для внесения данных в уже созданную!!! таблицу");
+        Console.WriteLine("Задание 2. Создание записи. Использовать следующий формат:\r\nmyApp 2 ФИО ДатаРождения Пол");
+    }
+
+    public override void LocalWork(SqlCommand sqlCommand)
+    {
+        Console.WriteLine($"Создана  {sqlCommand.ExecuteNonQuery()} запись");
+    }
+
+    public override string GetCommand()
     {
         var nameTable = GetConsole("Введите название таблици");
 
@@ -17,19 +28,9 @@ internal class Starter2
         var gender = GetConsole("Введите Пол");
         var dateBirth = GetConsole("Введите дату в формате гггг-мм-дд");
 
-        string addEntryCommand = $"INSERT [{nameTable}] ([Name], [Surname], [Patronymic], [Gender], [DateBirth])\r\n" +
+        string command = $"INSERT [{nameTable}] ([Name], [Surname], [Patronymic], [Gender], [DateBirth])\r\n" +
                          $"VALUES (N'{name}',N'{surname}', N'{patronymic}',N'{gender}', CAST(N'{dateBirth}' AS DateTime))";
 
-        sqlConnection.Open();
-        SqlCommand sqlCommand = new SqlCommand(addEntryCommand, sqlConnection);
-        Console.WriteLine($"Создана  {sqlCommand.ExecuteNonQuery()} запись");
-        sqlConnection.Close();
-    }
-
-    private string GetConsole(string request)
-    {
-        Console.WriteLine(request);
-        Console.Write(", ");
-        return Console.ReadLine();
+        return command;
     }
 }

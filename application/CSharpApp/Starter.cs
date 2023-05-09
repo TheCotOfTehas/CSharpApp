@@ -60,6 +60,7 @@ namespace CSharpApp
                         break;
 
                     case "delete":
+                        var e = "DELETE FROM foreign_names WHERE Id > -1;";
                         Console.WriteLine($"Удалена {sqlCommand.ExecuteNonQuery()} строка");
                         break;
 

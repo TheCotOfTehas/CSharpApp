@@ -7,28 +7,22 @@
 //Starter.Start("PersonDB");
 //Startup.ClearTable("PersonDB", "C:\\Users\\tsebr\\OneDrive\\Рабочий стол\\foreign_names.sql");
 
-
 using System.Data.SqlClient;
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using CSharpApp;
-using static Azure.Core.HttpHeader;
+using System.Linq;
 
 string connectionConfiguration = ConfigurationManager.ConnectionStrings["PersonDB"].ConnectionString;
 SqlConnection sqlConnection = new SqlConnection(connectionConfiguration);
 
 Console.WriteLine("Добро пожаловать, Вы  запустили консольное приложение для выполнения тестового задания");
-//var myApp2 = new Starter2();
-//var myApp3 = new Starter3();
-//var myApp4 = new Starter4();
-//var myApp5 = new Starter5();
-//var myApp6 = new Starter6();
 
 while (true)
 {
     Console.WriteLine("Введите комманду запуска приложенния");
-    Console.WriteLine("Команда выгледит так \"csharp myapp.cs #\" за место решётки цифра от 1-6");
+    Console.WriteLine("Команда выгледит так \"myApp #\" за место решётки цифра от 1-6");
     Console.Write(", ");
 
     var command = Console.ReadLine();
@@ -38,23 +32,25 @@ while (true)
 
     var commandSplit = command.Trim().Split(' ');
 
-    switch (command.ToLower())
+    switch (command)
     {
-        case "csharp myapp.cs 1":
+        case "myApp 1":
             var myApp1 = new Starter1(sqlConnection);
             myApp1.Run();
             break;
 
-        case "csharp myapp.cs 2":
+        case "myApp 2":
             var myApp2 = new Starter2(sqlConnection);
             myApp2.Run();
             break;
 
-        //case "CSharp myApp.cs 3":
-        //    myApp3.Run();
-        //    break;
+        case "myApp 3":
+            var myApp3 = new Starter3(sqlConnection);
+            myApp3.Run();
+            break;
 
-        //case "CSharp myApp.cs 4":
+        //case "myApp 4":
+        //    var myApp4 = new Starter4(sqlConnection);
         //    myApp4.Run();
         //    break;
 
@@ -65,6 +61,9 @@ while (true)
         //case "CSharp myApp.cs 6":
         //    myApp6.Run();
         //    break;
+        case "starter":
+            Starter.Start("PersonDB");
+            break;
 
         default:
             Console.WriteLine($"Комманада {command} была не корректной");
