@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,14 +32,22 @@ namespace CSharpApp
             return Console.ReadLine();
         }
 
-        public abstract string GetCommand();
+        public abstract IEnumerable<string> GetCommand();
 
-        public void DoWorkingDB(string command)
+        public void DoWorkingDB(IEnumerable<string> commands)
         {
             sqlConnection.Open();
-            SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
-            LocalWork(sqlCommand);
+            foreach (var command in commands)
+            {
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                LocalWork(sqlCommand);
+            }
             sqlConnection.Close();
+        }
+
+        public static bool ContainsTable(string nameTable)
+        {
+            return true;
         }
 
         public abstract void LocalWork(SqlCommand sqlCommand);

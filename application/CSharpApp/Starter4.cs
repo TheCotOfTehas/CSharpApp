@@ -1,115 +1,112 @@
-﻿using CSharpApp;
+﻿using Entities;
+using Mamory;
 using Microsoft.Data.SqlClient;
-using System.Text;
-using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
+using System.Xml.Linq;
 using static Azure.Core.HttpHeader;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml;
 
-internal class Starter4 
+
+namespace CSharpApp
 {
-    //SqlConnection sqlConnection;
+    internal class Starter4
+    {
+        public SqlConnection sqlConnection;
+        public Starter4(SqlConnection sqlConnection)
+        {
+            this.sqlConnection = sqlConnection;
+        }
 
-    //public Starter4(SqlConnection sqlConnection)
-    //{
-    //    this.sqlConnection = sqlConnection;
-    //}
+        public void Run()
+        {
+            Introduction();
+            var nameTable = "Persons";
+            string commandName = $"SELECT *\r\n" +
+                             $"FROM [russian_names];";
 
-    //public override void Run()
-    //{
-    //    Console.WriteLine("Запуск добавления в таблицу значений");
-    //    Console.WriteLine("Буду использовать готовую бд и на её осное создам новую");
-    //    var arraySqlCommandString = GetListCommandInsert("C:\\Users\\tsebr\\OneDrive\\Рабочий стол\\Новая папка (2)\\foreign_names.sql");
-    //    //CreateNeedMyTables("C:\\Users\\tsebr\\OneDrive\\Рабочий стол\\Новая папка (2)\\mssql_create_tables.sql");
-    //    //AddToTableforeign_names(arraySqlCommandString);
-    //    GetListCommand("C:\\Users\\tsebr\\OneDrive\\Рабочий стол\\Новая папка (2)\\mssql_create_tables.sql");
-    //}
+            string commandSurnames = $"SELECT *\r\n" +
+                             $"FROM [russian_surnames];";
 
+            var listSurnam = GetSurname(commandSurnames);
+            var listName = GetName(commandName);
+            var listPerson = new List<Person>();
+            for (int i = 0; i < listSurnam.Count && i < listName.Count; i++)
+            {
+                var person = new Person()
+                {
+                    Name = listName[i].Name_,
+                    Surname = listSurnam[i].Surnam,
+                    Gender = listSurnam[i].Sex == "Ж"? Gender.Woman : Gender.Man,
+                    DateBirth = listName[i].WhenPeoplesCount,
+                    Id = Guid.NewGuid(),
+                    Patronymic = listSurnam[i].Surnam
+                };
 
-    //public static IEnumerable<string> GetListCommandInsert(string fileName)
-    //{
-    //    using (FileStream stream = File.OpenRead(fileName))
-    //    {
-    //        byte[] buffer = new byte[stream.Length];
-    //        stream.Read(buffer, 0, buffer.Length);
-    //        string textFromFile = Encoding.Default.GetString(buffer);
-    //        var arrayCommandSql = textFromFile.Split(';');
-    //        foreach (string oneCommand in arrayCommandSql)
-    //        {
-    //            var formatedOneCommand = GetFormatCommand(oneCommand);
-    //            if (formatedOneCommand.Length > 0 && formatedOneCommand.StartsWith("INSERT") && formatedOneCommand[^1] == ')')
-    //                yield return formatedOneCommand;
-    //        }
-    //    }
-    //}
-    //public void GetListCommand(string fileName)
-    //{
-    //    using (FileStream stream = File.OpenRead(fileName))
-    //    {
-    //        byte[] buffer = new byte[stream.Length];
-    //        stream.Read(buffer, 0, buffer.Length);
-    //        string textFromFile = Encoding.Default.GetString(buffer);
-    //        var arrayCommandSql = textFromFile.Split(';');
-    //        sqlConnection.Open();
-    //        SqlCommand sqlCommand = new(textFromFile, sqlConnection);
-    //        Console.WriteLine($"Создана {sqlCommand.ExecuteNonQuery()} таблица");
-    //        sqlConnection.Close();
-            
-    //        //foreach (string oneCommand in arrayCommandSql)
-    //        //{
-    //        //    yield return oneCommand;
-    //        //}
-    //    }
-    //}
+                listPerson.Add(person);
+            }
+            sqlConnection.Open();
+            foreach (var person in listPerson)
+            {
+                string command = $"INSERT [{nameTable}] ([Name], [Surname], [Patronymic], [Gender], [DateBirth])\r\n" +
+                $"VALUES (N'{person.Name}',N'{person.Surname}', N'{person.Patronymic}',N'{person.Gender}', CAST(N'{person.DateBirth.Year}-{person.DateBirth.Month}-{person.DateBirth.Day}' AS DateTime))";
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                Console.WriteLine($"Создана  {sqlCommand.ExecuteNonQuery()} запись");
+            }
+            sqlConnection.Close();
+        }
 
-    ////public void CreateNeedMyTables(string fileName)
-    ////{
-    ////    var commands = GetListCommand(fileName);
-    ////    sqlConnection.Open();
-    ////    foreach (var command in commands)
-    ////    {
-    ////        Console.WriteLine(command);
-    ////        SqlCommand sqlCommand = new(command, sqlConnection);
-    ////        Console.WriteLine($"Создана таблица {sqlCommand.ExecuteNonQuery()}");
-    ////    }
-    ////    sqlConnection.Close();
-    ////}
+        public List<Surname> GetSurname(string command)
+        {
+            sqlConnection.Open();
+            SqlCommand sqlComSurnames = new SqlCommand(command, sqlConnection);
+            var sqlRussianSurnamesReader = sqlComSurnames.ExecuteReader();
 
-    //public void AddToTableforeign_names(IEnumerable<string> arraySqlCommandString)
-    //{
-    //    sqlConnection.Open();
-    //    Console.WriteLine($"{arraySqlCommandString.Count()}   Количество записей для добовления");
-    //    int countAdd = 0;
-    //    foreach (string sqlCommandString in arraySqlCommandString)
-    //    {
-    //        SqlCommand sqlCommand = new SqlCommand(sqlCommandString, sqlConnection);
-    //        //var d = "insert [foreign_names] ([id],[name],[meaning],[gender],[origin],[peoplescount],[whenpeoplescount],[source]) values (43310,n'kody',n'\"assistant, a cushion, possessions.\"',n'male',n'celtic',14000,cast(n'2016-07-07 07:43:52' as datetime),n'mydata.biz')";
-    //        try
-    //        {
-    //            Console.WriteLine($"Добавлено {sqlCommand.ExecuteNonQuery()}");
-    //            countAdd++;
-    //        }
-    //        catch
-    //        {
-    //            //Тут дабавить в лог ошибок
-    //            //Console.WriteLine($"Error command {sqlCommandString}");
-    //        }
-    //    }
-    //    Console.WriteLine($"{arraySqlCommandString.Count()}   Добавлено в итоге");
+            List<Surname> name = new List<Surname>();
+            while (sqlRussianSurnamesReader.Read())
+            {
+                var person = new Surname()
+                {
+                    ID = (int)sqlRussianSurnamesReader["ID"],
+                    Source = (string)sqlRussianSurnamesReader["Source"],
+                    Surnam = (string)sqlRussianSurnamesReader["Surname"],
+                    PeoplesCount = (int)sqlRussianSurnamesReader["PeoplesCount"],
+                    WhenPeoplesCount = (DateTime)sqlRussianSurnamesReader["WhenPeoplesCount"]
+                };
+                name.Add(person);
+            }
+            sqlConnection.Close();
 
-    //    sqlConnection.Close();
-    //}
+            return name;
+        }
 
-    //private static string GetFormatCommand(string stringCommand)
-    //{
-    //    //Нужно убрать не корректные команды
-    //    return stringCommand.Trim();
-    //}
+        public List<Name> GetName(string comcommand)
+        {
+            sqlConnection.Open();
+            SqlCommand sqlComSurnames = new SqlCommand(comcommand, sqlConnection);
+            var sqlRussianSurnamesReader = sqlComSurnames.ExecuteReader();
+
+            List<Name> name = new List<Name>();
+            while (sqlRussianSurnamesReader.Read())
+            {
+                var person = new Name()
+                {
+                    ID = (int)sqlRussianSurnamesReader["ID"],
+                    Source = (string)sqlRussianSurnamesReader["Source"],
+                    Name_ = (string)sqlRussianSurnamesReader["Name"],
+                    PeoplesCount = (int)sqlRussianSurnamesReader["PeoplesCount"],
+                    WhenPeoplesCount = (DateTime)sqlRussianSurnamesReader["WhenPeoplesCount"]
+                };
+                name.Add(person);
+            }
+            sqlConnection.Close();
+
+            return name;
+        }
+        public void Introduction()
+        {
+            Console.WriteLine("Заполнение автоматически 1000000 строк. " +
+                "Распределение пола в них должно быть относительно равномерным, начальной буквы ФИО также. " +
+                "Заполнение автоматически 100 строк в которых пол мужской и ФИО начинается с \"F\".\r\nПример запуска приложения:\r\nmyApp 4");
+        }
+    }
 }

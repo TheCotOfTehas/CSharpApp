@@ -18,7 +18,7 @@ internal class Starter2 : StqrterAbstract
         Console.WriteLine($"Создана  {sqlCommand.ExecuteNonQuery()} запись");
     }
 
-    public override string GetCommand()
+    public override IEnumerable< string> GetCommand()
     {
         var nameTable = GetConsole("Введите название таблици");
 
@@ -31,6 +31,6 @@ internal class Starter2 : StqrterAbstract
         string command = $"INSERT [{nameTable}] ([Name], [Surname], [Patronymic], [Gender], [DateBirth])\r\n" +
                          $"VALUES (N'{name}',N'{surname}', N'{patronymic}',N'{gender}', CAST(N'{dateBirth}' AS DateTime))";
 
-        return command;
+        yield return command;
     }
 }

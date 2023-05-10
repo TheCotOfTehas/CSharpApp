@@ -49,10 +49,10 @@ while (true)
             myApp3.Run();
             break;
 
-        //case "myApp 4":
-        //    var myApp4 = new Starter4(sqlConnection);
-        //    myApp4.Run();
-        //    break;
+        case "myApp 4":
+            var myApp4 = new Starter4(sqlConnection);
+            myApp4.Run();
+            break;
 
         //case "CSharp myApp.cs 5":
         //    myApp5.Run();

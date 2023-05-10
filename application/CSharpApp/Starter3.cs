@@ -28,12 +28,12 @@ internal class Starter3 : StqrterAbstract
         }
     }
 
-    public override string GetCommand()
+    public override IEnumerable<string> GetCommand()
     {
         var command = $"SELECT DISTINCT [Name], [Surname], [Patronymic], [DateBirth]\r\n" +
             $"FROM [Persons]\r\n" +
             $"ORDER BY [Name], [Surname], [Patronymic];";
 
-        return command;
+        yield return command;
     }
 }
