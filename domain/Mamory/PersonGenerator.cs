@@ -12,7 +12,6 @@ namespace Entities
         public static Person GetPerson() 
         { 
             throw new NotImplementedException();
-        }
-        
+        }       
     }
 }
